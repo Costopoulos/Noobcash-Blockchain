@@ -14,15 +14,24 @@ from uuid import uuid4
 
 
 
-class wallet:
+class Wallet:
 
-	def __init__():
-		##set
+	def __init__(self):
 
-		#self.public_key
-		#self.private_key
-		#self_address
-		#self.transactions
+		self.private_key = RSA.generate(1024, Crypto.Random.new().read)
+		self.public_key = self.private_key.publickey()
+		self.signer = PKCS1_v1_5.new(self.private_key)
 
-	def balance():
+	def get_pubaddress(self):
+		return binascii.hexlify(self.public_key.exportKey(format='DER')).decode('ascii')
 
+	def get_pubkey(self):
+		return self.public_key
+
+
+	def balance(self,utxolist):
+		bal = 0
+		for item in utxolist:
+			bal += item.get_amount()
+	
+		return bal
